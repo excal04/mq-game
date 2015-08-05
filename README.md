@@ -1,2 +1,2 @@
 # mq-game
-minute quiz game
+just some stuff to code
