@@ -23,7 +23,7 @@ function Game() {
     });
 }
 
-// countdown timer
+// timer object: countdown timer
 function Timer(startTime) {
     var currTime = startTime || 60;
     var timerID;
@@ -73,4 +73,17 @@ function Timer(startTime) {
 
 
     // return Object.create(Timer);
+}
+
+// word object
+function Word(word, category) {
+    this.word = word;
+    this.firstLetter = this.word[0];
+    this.category = category;
+
+    // todo: equals / comparator for slight misspelling
+}
+
+function getJSONData() {
+    
 }
