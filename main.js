@@ -8,18 +8,18 @@ $(document).ready(function() {
 
     $startTimer.click(function() {
 
-        var game = Game(function() {
-
-        });
+        var game = Game();
     });
 
 }); // end of document.ready
 
 function Game() {
-    var timer = Timer(10);
+    var timer = new Timer(10);
+    console.log(timer);
     this.meow = "cat";
     timer.start(function() {
-        console.log("meow is ", this.meow);
+        console.log("meow is ", meow);
+
     });
 }
 
@@ -35,24 +35,25 @@ function Timer(startTime) {
 
     // start timer
     this.start = function(callback) {
-        console.log("func start");
         if (callback) {
             this.task = callback;
         }
         timerID = setInterval(function() {
             if(this.tick())
                 this.task();
-            else
-                this.stop();
-            console.log("inside callbak");
 
-        }, interval);
+            // console.log("this = ", this);
+            // var x = function() {
+            //     console.log("this2 = ", this);
+            // }();
+
+        }.bind(this), this.interval);
     }
 
     // returns true if timer can tick, else false means time is up
     this.tick = function() {
         if (currTime === 0) {
-            clearInterval(timerID);
+            this.stop();
             return false;
         } else {
             currTime--;
@@ -71,5 +72,5 @@ function Timer(startTime) {
     }
 
 
-    return this;
+    // return Object.create(Timer);
 }
