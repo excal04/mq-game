@@ -1,0 +1,32 @@
+{
+    "categories" : [
+        {
+            "name" : "shapes",
+            "words" : [
+                "circle",
+                "square",
+                "rectangle"
+            ]
+        },
+        {
+            "name" : "modes of transportation",
+            "words" : [
+                "car",
+                "bus",
+                "train",
+                "boat"
+            ]
+        },
+        {
+            "name" : "animals",
+            "words" : [
+                "dog",
+                "cat",
+                "horse",
+                "mouse",
+                "goat",
+                "whale"
+            ]
+        }
+    ]
+}
