@@ -1,8 +1,11 @@
 // main.js
 
-
-
 $(document).ready(function() {
+
+    var game = new Game();
+    initGameData(game);
+    console.log("game.gameData after init = ", game.gameData);
+    // game.start();
 
     var $startTimer = $("#btnStart");
     var $getfileBtn = $("#btngetfile");
@@ -14,9 +17,7 @@ $(document).ready(function() {
 
     $getfileBtn.click(function() {
         console.log("get file click");
-        $.getJSON("test.json", function(data) {
-            console.log("data = ", data);
-        });
+
         // $.get("test.json", function(data, status) {
         //     console.log("data = ", data);
         //     console.log("status = ", status);
@@ -25,14 +26,55 @@ $(document).ready(function() {
 
 }); // end of document.ready
 
-function Game() {
-    var timer = new Timer(10);
-    console.log(timer);
-    this.meow = "cat";
-    timer.start(function() {
-        console.log("meow is ", meow);
+
+// intialization of game data
+function initGameData(game) {
+    console.log("game.gameData 0 = ", game.gameData);
+
+    $.getJSON("assets/categories.json", function(data) {
+        game.setGameData(data);
+        console.log("game.gameData 1 = ", game.gameData);
 
     });
+    console.log("game.gameData 2 = ", game.gameData);
+}
+
+
+function Game(timer) {
+    var timer = new Timer(timer || 10);
+    // var gameData;
+    this.gameData;
+
+
+    console.log("game constructor timer = ", timer);
+    this.start = function() {
+        timer.start(function() {
+            // do something here that changes every second (progress bar moving ? perhaps)
+            console.log("this is what timer does");
+        });
+
+        while (timer.running) {
+            console.log("do something");
+        }
+    }
+
+    this.end = function() {
+        // disable a button for example
+        console.log("game ended");
+
+    }
+
+    // sets the game data
+    this.setGameData = function(obj) {
+        this.gameData = obj;
+    }
+
+    this.printData = function() {
+        console.log("game data: ", this.gameData);
+        console.log("type of this.gameData: ", typeof this.gameData);
+        console.log("this.gameData.categories: ", this.gameData.categories);
+        console.log("this.gameData.categories[0].name: ", this.gameData.categories[0].name);
+    }
 }
 
 // timer object: countdown timer
@@ -41,15 +83,16 @@ function Timer(startTime) {
     var timerID;
 
     this.interval = 1000;
+    this.running = false;
     this.task = function() {
         console.log("currTime = ", currTime);
     };
 
     // start timer
     this.start = function(callback) {
-        if (callback) {
-            this.task = callback;
-        }
+        this.task = callback || this.task;
+        this.running = true;
+
         timerID = setInterval(function() {
             if(this.tick())
                 this.task();
@@ -76,6 +119,7 @@ function Timer(startTime) {
     // stop timer
     this.stop = function() {
         clearInterval(timerID);
+        this.running = false;
     }
 
     // decreases current time with param seconds
