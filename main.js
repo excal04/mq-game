@@ -3,7 +3,7 @@
 $(document).ready(function() {
 
     var game = new Game();
-    initGameData(game);
+    game.init();
     console.log("game.gameData after init = ", game.gameData);
     // game.start();
 
@@ -28,25 +28,32 @@ $(document).ready(function() {
 
 
 // intialization of game data
-function initGameData(game) {
-    console.log("game.gameData 0 = ", game.gameData);
-
+function initGameData(processData) {
     $.getJSON("assets/categories.json", function(data) {
-        game.setGameData(data);
-        console.log("game.gameData 1 = ", game.gameData);
-
+        processData(data);
     });
-    console.log("game.gameData 2 = ", game.gameData);
 }
 
 
 function Game(timer) {
     var timer = new Timer(timer || 10);
+    var words = [];
+
     // var gameData;
     this.gameData;
 
 
     console.log("game constructor timer = ", timer);
+
+    this.init = function() {
+        initGameData(function(data) {
+            generateWords(data);
+            console.log("data inside callback = ", data);
+            
+        });
+    }
+
+
     this.start = function() {
         timer.start(function() {
             // do something here that changes every second (progress bar moving ? perhaps)
@@ -64,16 +71,16 @@ function Game(timer) {
 
     }
 
-    // sets the game data
-    this.setGameData = function(obj) {
-        this.gameData = obj;
-    }
+    var generateWords = function(obj) {
+        obj.categories.forEach(function(cat) {
+            var currCat = cat.name;
+            cat.words.forEach(function(word) {
+                var word = new Word(word, currCat);
+                words.push(word);
+            });
+        });
 
-    this.printData = function() {
-        console.log("game data: ", this.gameData);
-        console.log("type of this.gameData: ", typeof this.gameData);
-        console.log("this.gameData.categories: ", this.gameData.categories);
-        console.log("this.gameData.categories[0].name: ", this.gameData.categories[0].name);
+        // console.log("gen words: words = ", words);
     }
 }
 
