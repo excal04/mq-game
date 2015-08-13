@@ -4,15 +4,12 @@ $(document).ready(function() {
 
     var game = new Game();
     game.init();
-    console.log("game.gameData after init = ", game.gameData);
-    // game.start();
 
-    var $startTimer = $("#btnStart");
+    var $startBtn = $("#btnStart");
     var $getfileBtn = $("#btngetfile");
 
-    $startTimer.click(function() {
-
-        var game = Game();
+    $startBtn.click(function() {
+        startGame();
     });
 
     $getfileBtn.click(function() {
@@ -24,19 +21,26 @@ $(document).ready(function() {
         // });
     });
 
+
+    function startGame() {
+        // starts the timer and generates the words to guess
+        game.start();
+    }
+
 }); // end of document.ready
 
 
-// intialization of game data
-function initGameData(processData) {
+// load JSON game data
+function loadGameData(processData) {
     $.getJSON("assets/categories.json", function(data) {
         processData(data);
     });
 }
 
 
-function Game(timer) {
-    var timer = new Timer(timer || 10);
+function Game(seconds) {
+    var timer = new Timer(seconds || 10);
+    var randPlace = 1000000;    // change to const (ES6 i think?)
     var words = [];
 
     // var gameData;
@@ -46,23 +50,25 @@ function Game(timer) {
     console.log("game constructor timer = ", timer);
 
     this.init = function() {
-        initGameData(function(data) {
+        loadGameData(function(data) {
             generateWords(data);
             console.log("data inside callback = ", data);
-            
+
         });
     }
 
 
     this.start = function() {
+        randomizeWords();
         timer.start(function() {
             // do something here that changes every second (progress bar moving ? perhaps)
-            console.log("this is what timer does");
+            console.log("this is what timer does, words[0] = ", words[0]);
         });
 
-        while (timer.running) {
-            console.log("do something");
-        }
+        // while (timer.running) {
+        //     console.log("do something");
+        // }
+        console.log("game start: random words = ", words);
     }
 
     this.end = function() {
@@ -81,6 +87,15 @@ function Game(timer) {
         });
 
         // console.log("gen words: words = ", words);
+    }
+
+    var randomizeWords = function() {
+        for (var i = words.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * randPlace) % (i + 1);
+            var temp = words[i];
+            words[i] = words[j];
+            words[j] = temp;
+        }
     }
 }
 
@@ -145,8 +160,4 @@ function Word(word, category) {
     this.category = category;
 
     // todo: equals / comparator for slight misspelling
-}
-
-function getJSONData() {
-
 }
