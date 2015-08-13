@@ -5,10 +5,22 @@
 $(document).ready(function() {
 
     var $startTimer = $("#btnStart");
+    var $getfileBtn = $("#btngetfile");
 
     $startTimer.click(function() {
 
         var game = Game();
+    });
+
+    $getfileBtn.click(function() {
+        console.log("get file click");
+        $.getJSON("test.json", function(data) {
+            console.log("data = ", data);
+        });
+        // $.get("test.json", function(data, status) {
+        //     console.log("data = ", data);
+        //     console.log("status = ", status);
+        // });
     });
 
 }); // end of document.ready
@@ -85,5 +97,5 @@ function Word(word, category) {
 }
 
 function getJSONData() {
-    
+
 }
