@@ -7,6 +7,10 @@ $(document).ready(function() {
 
     var $startBtn = $("#btnStart");
     var $getfileBtn = $("#btngetfile");
+    var $category = $("#cat");
+    var $firstLetter = $("#letter");
+    var $answerBox = $("#txtAns");
+
 
     $startBtn.click(function() {
         startGame();
@@ -25,6 +29,7 @@ $(document).ready(function() {
     function startGame() {
         // starts the timer and generates the words to guess
         game.start();
+
     }
 
 }); // end of document.ready
@@ -39,9 +44,10 @@ function loadGameData(processData) {
 
 
 function Game(seconds) {
-    var timer = new Timer(seconds || 10);
+    var timer = new Timer(seconds || 5);
     var randPlace = 1000000;    // change to const (ES6 i think?)
     var words = [];
+
 
     // var gameData;
     this.gameData;
@@ -55,27 +61,37 @@ function Game(seconds) {
             console.log("data inside callback = ", data);
 
         });
-    }
+    };
 
 
     this.start = function() {
+        timer = new Timer(5);
         randomizeWords();
+        var $timerUI = document.getElementById("timerUI")
+        var seconds = new ProgressBar.Circle($timerUI, {
+            color: "#FCB03C",
+            trailColor: "#ddd",
+            duration: 1 // duration of each transition
+        });
         timer.start(function() {
             // do something here that changes every second (progress bar moving ? perhaps)
-            console.log("this is what timer does, words[0] = ", words[0]);
+            seconds.animate(timer.getTime() / timer.getInitTime(), function() {
+                seconds.setText(timer.getTime());
+            });
+            log
         });
 
         // while (timer.running) {
         //     console.log("do something");
         // }
         console.log("game start: random words = ", words);
-    }
+    };
 
     this.end = function() {
         // disable a button for example
         console.log("game ended");
 
-    }
+    };
 
     var generateWords = function(obj) {
         obj.categories.forEach(function(cat) {
@@ -87,7 +103,7 @@ function Game(seconds) {
         });
 
         // console.log("gen words: words = ", words);
-    }
+    };
 
     var randomizeWords = function() {
         for (var i = words.length - 1; i > 0; i--) {
@@ -96,16 +112,18 @@ function Game(seconds) {
             words[i] = words[j];
             words[j] = temp;
         }
-    }
+    };
 }
 
 // timer object: countdown timer
 function Timer(startTime) {
     var currTime = startTime || 60;
+    var initialTime = startTime;
     var timerID;
 
     this.interval = 1000;
     this.running = false;
+
     this.task = function() {
         console.log("currTime = ", currTime);
     };
@@ -125,7 +143,7 @@ function Timer(startTime) {
             // }();
 
         }.bind(this), this.interval);
-    }
+    };
 
     // returns true if timer can tick, else false means time is up
     this.tick = function() {
@@ -136,19 +154,26 @@ function Timer(startTime) {
             currTime--;
             return true;
         }
-    }
+    };
 
     // stop timer
     this.stop = function() {
         clearInterval(timerID);
         this.running = false;
-    }
+    };
 
     // decreases current time with param seconds
     this.skip = function(seconds) {
         currTime -= seconds;
-    }
+    };
 
+    this.getTime = function() {
+        return currTime;
+    };
+
+    this.getInitTime = function() {
+        return initialTime;
+    };
 
     // return Object.create(Timer);
 }

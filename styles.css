@@ -17,4 +17,15 @@
 	font: serif;	/* i want a nice font :( */
 }
 
+#answers {
+	background-color: yellow;
+	display: none;
+	width: 100px;
+	height: 100px;
+}
 
+#timerUI {
+	width: 200px;
+	height: 200px;
+	position: relative;
+}
