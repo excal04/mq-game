@@ -40,6 +40,10 @@ $(document).ready(function() {
         $category.text(question.category);
     }
 
+    function displayAnswers() {
+
+    }
+
 }); // end of document.ready
 
 
@@ -53,6 +57,7 @@ function loadGameData(processData) {
 
 function Game(seconds) {
     var randPlace = 1000000;    // change to const (ES6 i think?)
+    var wordStruct = {};
     var words = [];
     var answers = [];
     var $timerUI;
@@ -106,7 +111,6 @@ function Game(seconds) {
             seconds.animate(timer.getTime() / timer.getInitTime(), function() {
                 seconds.setText(timer.getTime());
             });
-
         });
 
         // while (timer.running) {
@@ -130,27 +134,26 @@ function Game(seconds) {
         } catch (e) {
             console.log("Error: ", e.message);
             alert("Oops! Something went, we probably ran out of questions :/");
-        } finally {
-            // clean it up? idk reload browswer?
         }
-
     };
 
     // add a user's answer
     this.addAns = function(ans) {
-        answers.push(ans);
+        answers.push(ans.toLowerCase());
     };
 
     var generateWords = function(obj) {
         obj.categories.forEach(function(cat) {
-            var currCat = cat.name;
-            cat.words.forEach(function(word) {
-                var word = new Word(word, currCat);
+            var currCat = cat.name.toUpperCase();
+            wordStruct[currCat] = {};
+            cat.words.forEach(function(w) {
+                var word = new Word(w.toLowerCase(), currCat);
+                wordStruct[currCat][w] = {};
                 words.push(word);
             });
         });
 
-        // console.log("gen words: words = ", words);
+        console.log("gen words: struct = ", wordStruct);
     };
 
     var shuffleWords = function() {
@@ -172,13 +175,20 @@ function Timer(startTime) {
     this.interval = 1000;
     this.running = false;
 
+    // callback to do every tick
     this.task = function() {
         console.log("currTime = ", currTime);
     };
 
+    // callback when timer is done
+    this.lastTask = function() {
+        console.log("TIME IS UP");
+    };
+
     // start timer
-    this.start = function(callback) {
+    this.start = function(callback, lastTask) {
         this.task = callback || this.task;
+        this.lastTask = lastTask || this.lastTask;
         this.running = true;
 
         timerID = setInterval(function() {
@@ -207,6 +217,7 @@ function Timer(startTime) {
     // stop timer
     this.stop = function() {
         clearInterval(timerID);
+        this.lastTask();
         this.running = false;
     };
 
