@@ -10,19 +10,18 @@ $(document).ready(function() {
     var $category = $("#cat");
     var $firstLetter = $("#letter");
     var $answerBox = $("#txtAns");
+    var $btnSubmit = $("#btnSubmit");
 
 
     $startBtn.click(function() {
         startGame();
     });
 
-    $getfileBtn.click(function() {
-        console.log("get file click");
-
-        // $.get("test.json", function(data, status) {
-        //     console.log("data = ", data);
-        //     console.log("status = ", status);
-        // });
+    $btnSubmit.click(function() {
+        // game logic
+        game.addAns($answerBox.val());
+        nextQuestion();
+        $answerBox.val("");
     });
 
 
@@ -30,6 +29,15 @@ $(document).ready(function() {
         // starts the timer and generates the words to guess
         game.start();
 
+        // load the first question
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        // get and display the question
+        var question = game.nextQuestion();
+        $firstLetter.text(question.letter);
+        $category.text(question.category);
     }
 
 }); // end of document.ready
@@ -46,8 +54,10 @@ function loadGameData(processData) {
 function Game(seconds) {
     var randPlace = 1000000;    // change to const (ES6 i think?)
     var words = [];
+    var answers = [];
     var $timerUI;
     var seconds;
+    var currWordIndex;  // index of the current word in words[]
 
     this.init = function() {
         loadGameData(function(data) {
@@ -62,17 +72,24 @@ function Game(seconds) {
 
 
     this.start = function() {
+        // initialize word deck and set the first question
+        shuffleWords();
+        currWordIndex = 0;
+        answers = [];
+
         var timer = new Timer(5);
-        randomizeWords();
         // initialize clock
+        // if timer ui already exists, destroy first before recreation
         seconds && seconds.destroy();
         seconds = new ProgressBar.Circle($timerUI, {
             color: "#FCB03C",
             trailColor: "#ddd",
-            // duration: 800,
+            // duration: 970,
             text: {
                 style: {
                     fontSize: "100px",
+                    position: "relative",
+                    top: "10px"
                 },
                 value: timer.getInitTime()
             },
@@ -101,7 +118,27 @@ function Game(seconds) {
     this.end = function() {
         // disable a button for example
         console.log("game ended");
+    };
 
+    // return the next question
+    this.nextQuestion = function() {
+        try {
+            return {
+                letter : words[currWordIndex].firstLetter,
+                category : words[currWordIndex++].category
+            };
+        } catch (e) {
+            console.log("Error: ", e.message);
+            alert("Oops! Something went, we probably ran out of questions :/");
+        } finally {
+            // clean it up? idk reload browswer?
+        }
+
+    };
+
+    // add a user's answer
+    this.addAns = function(ans) {
+        answers.push(ans);
     };
 
     var generateWords = function(obj) {
@@ -116,7 +153,7 @@ function Game(seconds) {
         // console.log("gen words: words = ", words);
     };
 
-    var randomizeWords = function() {
+    var shuffleWords = function() {
         for (var i = words.length - 1; i > 0; i--) {
             var j = Math.floor(Math.random() * randPlace) % (i + 1);
             var temp = words[i];
