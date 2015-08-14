@@ -46,14 +46,8 @@ function loadGameData(processData) {
 function Game(seconds) {
     var randPlace = 1000000;    // change to const (ES6 i think?)
     var words = [];
-    var $timerUI = document.getElementById("timerUI")
-    var seconds = new ProgressBar.Circle($timerUI, {
-        color: "#FCB03C",
-        trailColor: "#ddd",
-        duration: 1,
-        className: "progressbar-text"
-
-    });
+    var $timerUI;
+    var seconds;
 
     this.init = function() {
         loadGameData(function(data) {
@@ -61,6 +55,9 @@ function Game(seconds) {
             console.log("data inside callback = ", data);
 
         });
+        // initialize timer elements
+        $timerUI = document.getElementById("timerUI");
+
     };
 
 
@@ -68,13 +65,31 @@ function Game(seconds) {
         var timer = new Timer(5);
         randomizeWords();
         // initialize clock
+        seconds && seconds.destroy();
+        seconds = new ProgressBar.Circle($timerUI, {
+            color: "#FCB03C",
+            trailColor: "#ddd",
+            // duration: 800,
+            text: {
+                style: {
+                    fontSize: "100px",
+                },
+                value: timer.getInitTime()
+            },
+            svgStyle: {
+                width: "25%"
+            },
+            trailWidth: 5,
+            strokeWidth: 5
+        });
         seconds.set(timer.getTime() / timer.getInitTime());
+
         timer.start(function() {
             // do something here that changes every second (progress bar moving ? perhaps)
             seconds.animate(timer.getTime() / timer.getInitTime(), function() {
                 seconds.setText(timer.getTime());
             });
-            console.log("timer start");
+
         });
 
         // while (timer.running) {
