@@ -24,6 +24,10 @@ $(document).ready(function() {
         $answerBox.val("");
     });
 
+    $("#getAns").click(function() {
+        console.log(game.checkStruct);
+    });
+
 
     function startGame() {
         // starts the timer and generates the words to guess
@@ -57,12 +61,18 @@ function loadGameData(processData) {
 
 function Game(seconds) {
     var randPlace = 1000000;    // change to const (ES6 i think?)
+    var WRONG = "WRONG";
+    var CORRECT = "CORRECT";
+    var ALMOST = "ALMOST";
     var wordStruct = {};
     var words = [];
     var answers = [];
     var $timerUI;
     var seconds;
     var currWordIndex;  // index of the current word in words[]
+
+    // object used for checking
+    this.checkStruct = [];
 
     this.init = function() {
         loadGameData(function(data) {
@@ -111,7 +121,12 @@ function Game(seconds) {
             seconds.animate(timer.getTime() / timer.getInitTime(), function() {
                 seconds.setText(timer.getTime());
             });
-        });
+        },
+        function() {
+            checkAnswers.call(this);
+            console.log("this checkStruct = ", this.checkStruct);
+            console.log("this func = ", this);
+        }.bind(this));
 
         // while (timer.running) {
         //     console.log("do something");
@@ -142,13 +157,73 @@ function Game(seconds) {
         answers.push(ans.toLowerCase());
     };
 
+    var checkMisspelled = function(target, check) {
+        if (target.length !== check.length) return false;
+
+        var diff = 0;   // number of different characters
+        for (var i = 0; i < target.length; i++) {
+            if (target[i] !== check[i])
+                diff++;
+        }
+
+        return diff < 2 ? true : false;
+    };
+
+    var checkAnswers = function() {
+        this.checkStruct = [];
+        for (var i = 0; i < answers.length; i++) {
+            currCat = words[i].category;
+            if (answers[i].charAt(0) != words[i].firstLetter) {
+                this.checkStruct.push({
+                    answer : answers[i],
+                    correct : words[i].word,
+                    verdict : WRONG
+                });
+            } else if(wordStruct[currCat][answers[i]]) {    // is not null / undefined
+                this.checkStruct.push({
+                    answer : answers[i],
+                    correct : words[i].word,
+                    verdict : CORRECT
+                });
+            } else {    // same first letter but not sure if misspelled so we will search entire category
+                var misspelled = false;
+                for (var w in wordStruct[currCat]) {
+                    if (wordStruct[currCat].hasOwnProperty(w)) {
+                        if (checkMisspelled(wordStruct[currCat][w], answers[i])) {
+                            misspelled = true;
+                            var correctWord = wordStruct[currCat][w];
+                            break;
+                        }
+                    }
+                }
+                if (misspelled) {
+                    this.checkStruct.push({
+                        answer : answers[i],
+                        correct : correctWord,
+                        verdict : CORRECT
+                    });
+                } else {
+                    this.checkStruct.push({
+                        answer : answers[i],
+                        correct : words[i].word,
+                        verdict : WRONG
+                    });
+                }
+            }
+        }
+
+        console.log("checkstruct in checker = ", this.checkStruct);
+        console.log("checkstruct this = ", this);
+    };
+
+
     var generateWords = function(obj) {
         obj.categories.forEach(function(cat) {
             var currCat = cat.name.toUpperCase();
             wordStruct[currCat] = {};
             cat.words.forEach(function(w) {
                 var word = new Word(w.toLowerCase(), currCat);
-                wordStruct[currCat][w] = {};
+                wordStruct[currCat][w] = w;
                 words.push(word);
             });
         });
@@ -234,7 +309,6 @@ function Timer(startTime) {
         return initialTime;
     };
 
-    // return Object.create(Timer);
 }
 
 // word object
