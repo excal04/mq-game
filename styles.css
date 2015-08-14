@@ -24,8 +24,13 @@
 	height: 100px;
 }
 
-#timerUI {
+.container-small {
 	width: 200px;
 	height: 200px;
 	position: relative;
+}
+
+.progressbar-text {
+	font-size: 50px;
+	color: blue;
 }
