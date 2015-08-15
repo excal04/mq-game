@@ -1,4 +1,8 @@
 // main.js
+// This file is specifically for play.html thus document.ready initializes the game right after the
+// page loads, If this will be the js file for the whole web app, adjust ready() accordingly.
+
+// I am also not sure if putting everything inside the ready function advisable...
 
 $(document).ready(function() {
 
@@ -6,7 +10,6 @@ $(document).ready(function() {
     game.init();
 
     var $startBtn = $("#btnStart");
-    var $getfileBtn = $("#btngetfile");
     var $category = $("#cat");
     var $firstLetter = $("#letter");
     var $answerBox = $("#txtAns");
@@ -24,10 +27,6 @@ $(document).ready(function() {
         game.addAns($answerBox.val());
         nextQuestion();
         $answerBox.val("");
-    });
-
-    $("#getAns").click(function() {
-        console.log(game.checkStruct);
     });
 
 
@@ -83,14 +82,14 @@ $(document).ready(function() {
     }
 
 
-    function Game(seconds) {
-        var randPlace = 1000000;    // change to const (ES6 i think?)
-        var WRONG = "WRONG";
+    function Game() {
+        var randPlace = 1000000;    // change to const if supported (ES6 i think?)
+        var WRONG = "WRONG";        // these are constants too
         var CORRECT = "CORRECT";
         var ALMOST = "ALMOST";
-        var wordStruct = {};
+        var wordStruct = {};        // object structure representing the whole word-category relation
         var words = [];
-        var answers = [];
+        var answers = [];           // user answers
         var $timerUI;
         var seconds;
         var currWordIndex;  // index of the current word in words[]
@@ -116,8 +115,8 @@ $(document).ready(function() {
             currWordIndex = 0;
             answers = [];
 
-            var timer = new Timer(5);
             // initialize clock
+            var timer = new Timer(20);
             // if timer ui already exists, destroy first before recreation
             seconds && seconds.destroy();
             seconds = new ProgressBar.Circle($timerUI, {
@@ -294,11 +293,6 @@ $(document).ready(function() {
                 if(this.tick())
                     this.task();
 
-                // console.log("this = ", this);
-                // var x = function() {
-                //     console.log("this2 = ", this);
-                // }();
-
             }.bind(this), this.interval);
         };
 
@@ -342,6 +336,7 @@ $(document).ready(function() {
         this.category = category;
 
         // todo: equals / comparator for slight misspelling
+        // I made an implementation above, not too Object Oriented but hmm works great
     }
 
 }); // end of document.ready

@@ -1,5 +1,20 @@
 <!-- main game page -->
 
+<!-- TODO:
+    * Upon page load, there should be some kind of umm divs that show "ready" "set" "start!"
+    and then after that show the first 'card' in a nice transition.
+
+    * make questions appear in a form of a card, so that every next question will look like
+    flipping the card (probably slideUp() or slideDown()) in a fast motion (so not to intervere with the timer)
+        + If i were to do this, I would use jquery but I think there's a cleaner css way
+        that makes it easier with just toggling a class
+
+    * proper positioning of UI components
+
+    * startgame button should not be in this page, should be in the main one :P
+
+ -->
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,7 +27,6 @@
     </head>
     <body>
         <button id="btnStart" type="button" name="startTimer">start game</button>
-        <button id="btngetfile">get json file</button>
 
         <br />
         <br />
@@ -27,15 +41,11 @@
             </div>
             Answer: <input id="txtAns" type="text" />
             <button id="btnSubmit">Submit</button>
-
-
-            <button id="getAns">get answers</button>
         </div>
 
+        <!-- answers pane: where all the answers are displayed at the end of a game -->
         <div id="ansPane" class="hidden">
-            <p>
-                abc
-            </p>
+
         </div>
     </body>
 </html>
