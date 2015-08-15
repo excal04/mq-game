@@ -11,6 +11,7 @@ $(document).ready(function() {
     var $firstLetter = $("#letter");
     var $answerBox = $("#txtAns");
     var $btnSubmit = $("#btnSubmit");
+    var $ansPane = $("#ansPane");
 
 
     $startBtn.click(function() {
@@ -45,277 +46,272 @@ $(document).ready(function() {
     }
 
     function displayAnswers() {
+        var ansData = game.checkStruct;
+        $ansPane.css('display', 'relative');
 
     }
 
-}); // end of document.ready
-
-
-// load JSON game data
-function loadGameData(processData) {
-    $.getJSON("assets/categories.json", function(data) {
-        processData(data);
-    });
-}
-
-
-function Game(seconds) {
-    var randPlace = 1000000;    // change to const (ES6 i think?)
-    var WRONG = "WRONG";
-    var CORRECT = "CORRECT";
-    var ALMOST = "ALMOST";
-    var wordStruct = {};
-    var words = [];
-    var answers = [];
-    var $timerUI;
-    var seconds;
-    var currWordIndex;  // index of the current word in words[]
-
-    // object used for checking
-    this.checkStruct = [];
-
-    this.init = function() {
-        loadGameData(function(data) {
-            generateWords(data);
-            console.log("data inside callback = ", data);
-
+    // load JSON game data
+    function loadGameData(processData) {
+        $.getJSON("assets/categories.json", function(data) {
+            processData(data);
         });
-        // initialize timer elements
-        $timerUI = document.getElementById("timerUI");
-
-    };
+    }
 
 
-    this.start = function() {
-        // initialize word deck and set the first question
-        shuffleWords();
-        currWordIndex = 0;
-        answers = [];
+    function Game(seconds) {
+        var randPlace = 1000000;    // change to const (ES6 i think?)
+        var WRONG = "WRONG";
+        var CORRECT = "CORRECT";
+        var ALMOST = "ALMOST";
+        var wordStruct = {};
+        var words = [];
+        var answers = [];
+        var $timerUI;
+        var seconds;
+        var currWordIndex;  // index of the current word in words[]
 
-        var timer = new Timer(5);
-        // initialize clock
-        // if timer ui already exists, destroy first before recreation
-        seconds && seconds.destroy();
-        seconds = new ProgressBar.Circle($timerUI, {
-            color: "#FCB03C",
-            trailColor: "#ddd",
-            // duration: 970,
-            text: {
-                style: {
-                    fontSize: "100px",
-                    position: "relative",
-                    top: "10px"
-                },
-                value: timer.getInitTime()
-            },
-            svgStyle: {
-                width: "25%"
-            },
-            trailWidth: 5,
-            strokeWidth: 5
-        });
-        seconds.set(timer.getTime() / timer.getInitTime());
-
-        timer.start(function() {
-            // do something here that changes every second (progress bar moving ? perhaps)
-            seconds.animate(timer.getTime() / timer.getInitTime(), function() {
-                seconds.setText(timer.getTime());
-            });
-        },
-        function() {
-            checkAnswers.call(this);
-            console.log("this checkStruct = ", this.checkStruct);
-            console.log("this func = ", this);
-        }.bind(this));
-
-        // while (timer.running) {
-        //     console.log("do something");
-        // }
-        console.log("game start: random words = ", words);
-    };
-
-    this.end = function() {
-        // disable a button for example
-        console.log("game ended");
-    };
-
-    // return the next question
-    this.nextQuestion = function() {
-        try {
-            return {
-                letter : words[currWordIndex].firstLetter,
-                category : words[currWordIndex++].category
-            };
-        } catch (e) {
-            console.log("Error: ", e.message);
-            alert("Oops! Something went, we probably ran out of questions :/");
-        }
-    };
-
-    // add a user's answer
-    this.addAns = function(ans) {
-        answers.push(ans.toLowerCase());
-    };
-
-    var checkMisspelled = function(target, check) {
-        if (target.length !== check.length) return false;
-
-        var diff = 0;   // number of different characters
-        for (var i = 0; i < target.length; i++) {
-            if (target[i] !== check[i])
-                diff++;
-        }
-
-        return diff < 2 ? true : false;
-    };
-
-    var checkAnswers = function() {
+        // object used for checking
         this.checkStruct = [];
-        for (var i = 0; i < answers.length; i++) {
-            currCat = words[i].category;
-            if (answers[i].charAt(0) != words[i].firstLetter) {
-                this.checkStruct.push({
-                    answer : answers[i],
-                    correct : words[i].word,
-                    verdict : WRONG
+
+        this.init = function() {
+            loadGameData(function(data) {
+                generateWords(data);
+                console.log("data inside callback = ", data);
+
+            });
+            // initialize timer elements
+            $timerUI = document.getElementById("timerUI");
+
+        };
+
+
+        this.start = function() {
+            // initialize word deck and set the first question
+            shuffleWords();
+            currWordIndex = 0;
+            answers = [];
+
+            var timer = new Timer(5);
+            // initialize clock
+            // if timer ui already exists, destroy first before recreation
+            seconds && seconds.destroy();
+            seconds = new ProgressBar.Circle($timerUI, {
+                // color: "#FCB03C",
+                // trailColor: "#ddd",
+                // duration: 970,
+                text: {
+                    value: timer.getInitTime()
+                },
+                svgStyle: {
+                    width: "100%"   // occupies the whole container
+                },
+                trailWidth: 5,
+                strokeWidth: 5
+            });
+            seconds.set(timer.getTime() / timer.getInitTime());
+
+            timer.start(function() {
+                // do something here that changes every second (progress bar moving ? perhaps)
+                seconds.animate(timer.getTime() / timer.getInitTime(), function() {
+                    seconds.setText(timer.getTime());
                 });
-            } else if(wordStruct[currCat][answers[i]]) {    // is not null / undefined
-                this.checkStruct.push({
-                    answer : answers[i],
-                    correct : words[i].word,
-                    verdict : CORRECT
-                });
-            } else {    // same first letter but not sure if misspelled so we will search entire category
-                var misspelled = false;
-                for (var w in wordStruct[currCat]) {
-                    if (wordStruct[currCat].hasOwnProperty(w)) {
-                        if (checkMisspelled(wordStruct[currCat][w], answers[i])) {
-                            misspelled = true;
-                            var correctWord = wordStruct[currCat][w];
-                            break;
-                        }
-                    }
-                }
-                if (misspelled) {
-                    this.checkStruct.push({
-                        answer : answers[i],
-                        correct : correctWord,
-                        verdict : CORRECT
-                    });
-                } else {
+            },
+            function() {
+                checkAnswers.call(this);
+                displayAnswers();
+            }.bind(this));
+
+            // while (timer.running) {
+            //     console.log("do something");
+            // }
+            console.log("game start: random words = ", words);
+        };
+
+        this.end = function() {
+            // disable a button for example
+            console.log("game ended");
+        };
+
+        // return the next question
+        this.nextQuestion = function() {
+            try {
+                return {
+                    letter : words[currWordIndex].firstLetter,
+                    category : words[currWordIndex++].category
+                };
+            } catch (e) {
+                console.log("Error: ", e.message);
+                alert("Oops! Something went, we probably ran out of questions :/");
+            }
+        };
+
+        // add a user's answer
+        this.addAns = function(ans) {
+            answers.push(ans.toLowerCase());
+        };
+
+        var checkMisspelled = function(target, check) {
+            if (target.length !== check.length) return false;
+
+            var diff = 0;   // number of different characters
+            for (var i = 0; i < target.length; i++) {
+                if (target[i] !== check[i])
+                    diff++;
+            }
+
+            return diff < 2 ? true : false;
+        };
+
+        var checkAnswers = function() {
+            this.checkStruct = [];
+            for (var i = 0; i < answers.length; i++) {
+                currCat = words[i].category;
+                if (answers[i].charAt(0) != words[i].firstLetter) {
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
                         verdict : WRONG
                     });
+                } else if(wordStruct[currCat][answers[i]]) {    // is not null / undefined
+                    this.checkStruct.push({
+                        answer : answers[i],
+                        correct : words[i].word,
+                        verdict : CORRECT
+                    });
+                } else {    // same first letter but not sure if misspelled so we will search entire category
+                    var misspelled = false;
+                    for (var w in wordStruct[currCat]) {
+                        if (wordStruct[currCat].hasOwnProperty(w)) {
+                            if (checkMisspelled(wordStruct[currCat][w], answers[i])) {
+                                misspelled = true;
+                                var correctWord = wordStruct[currCat][w];
+                                break;
+                            }
+                        }
+                    }
+                    if (misspelled) {
+                        this.checkStruct.push({
+                            answer : answers[i],
+                            correct : correctWord,
+                            verdict : ALMOST
+                        });
+                    } else {
+                        this.checkStruct.push({
+                            answer : answers[i],
+                            correct : words[i].word,
+                            verdict : WRONG
+                        });
+                    }
                 }
             }
-        }
 
-        console.log("checkstruct in checker = ", this.checkStruct);
-        console.log("checkstruct this = ", this);
-    };
+            console.log("checkstruct in checker = ", this.checkStruct);
+            console.log("checkstruct this = ", this);
+        };
 
 
-    var generateWords = function(obj) {
-        obj.categories.forEach(function(cat) {
-            var currCat = cat.name.toUpperCase();
-            wordStruct[currCat] = {};
-            cat.words.forEach(function(w) {
-                var word = new Word(w.toLowerCase(), currCat);
-                wordStruct[currCat][w] = w;
-                words.push(word);
+        var generateWords = function(obj) {
+            obj.categories.forEach(function(cat) {
+                var currCat = cat.name.toUpperCase();
+                wordStruct[currCat] = {};
+                cat.words.forEach(function(w) {
+                    var word = new Word(w.toLowerCase(), currCat);
+                    wordStruct[currCat][w] = w;
+                    words.push(word);
+                });
             });
-        });
 
-        console.log("gen words: struct = ", wordStruct);
-    };
+            console.log("gen words: struct = ", wordStruct);
+        };
 
-    var shuffleWords = function() {
-        for (var i = words.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * randPlace) % (i + 1);
-            var temp = words[i];
-            words[i] = words[j];
-            words[j] = temp;
-        }
-    };
-}
+        var shuffleWords = function() {
+            for (var i = words.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * randPlace) % (i + 1);
+                var temp = words[i];
+                words[i] = words[j];
+                words[j] = temp;
+            }
+        };
+    }
 
-// timer object: countdown timer
-function Timer(startTime) {
-    var currTime = startTime || 60;
-    var initialTime = startTime;
-    var timerID;
+    // timer object: countdown timer
+    function Timer(startTime) {
+        var currTime = startTime || 60;
+        var initialTime = startTime;
+        var timerID;
 
-    this.interval = 1000;
-    this.running = false;
-
-    // callback to do every tick
-    this.task = function() {
-        console.log("currTime = ", currTime);
-    };
-
-    // callback when timer is done
-    this.lastTask = function() {
-        console.log("TIME IS UP");
-    };
-
-    // start timer
-    this.start = function(callback, lastTask) {
-        this.task = callback || this.task;
-        this.lastTask = lastTask || this.lastTask;
-        this.running = true;
-
-        timerID = setInterval(function() {
-            if(this.tick())
-                this.task();
-
-            // console.log("this = ", this);
-            // var x = function() {
-            //     console.log("this2 = ", this);
-            // }();
-
-        }.bind(this), this.interval);
-    };
-
-    // returns true if timer can tick, else false means time is up
-    this.tick = function() {
-        if (currTime === 0) {
-            this.stop();
-            return false;
-        } else {
-            currTime--;
-            return true;
-        }
-    };
-
-    // stop timer
-    this.stop = function() {
-        clearInterval(timerID);
-        this.lastTask();
+        this.interval = 1000;
         this.running = false;
-    };
 
-    // decreases current time with param seconds
-    this.skip = function(seconds) {
-        currTime -= seconds;
-    };
+        // callback to do every tick
+        this.task = function() {
+            console.log("currTime = ", currTime);
+        };
 
-    this.getTime = function() {
-        return currTime;
-    };
+        // callback when timer is done
+        this.lastTask = function() {
+            console.log("TIME IS UP");
+        };
 
-    this.getInitTime = function() {
-        return initialTime;
-    };
+        // start timer
+        this.start = function(callback, lastTask) {
+            this.task = callback || this.task;
+            this.lastTask = lastTask || this.lastTask;
+            this.running = true;
 
-}
+            timerID = setInterval(function() {
+                if(this.tick())
+                    this.task();
 
-// word object
-function Word(word, category) {
-    this.word = word;
-    this.firstLetter = this.word[0];
-    this.category = category;
+                // console.log("this = ", this);
+                // var x = function() {
+                //     console.log("this2 = ", this);
+                // }();
 
-    // todo: equals / comparator for slight misspelling
-}
+            }.bind(this), this.interval);
+        };
+
+        // returns true if timer can tick, else false means time is up
+        this.tick = function() {
+            if (currTime === 0) {
+                this.stop();
+                return false;
+            } else {
+                currTime--;
+                return true;
+            }
+        };
+
+        // stop timer
+        this.stop = function() {
+            clearInterval(timerID);
+            this.lastTask();
+            this.running = false;
+        };
+
+        // decreases current time with param seconds
+        this.skip = function(seconds) {
+            currTime -= seconds;
+        };
+
+        this.getTime = function() {
+            return currTime;
+        };
+
+        this.getInitTime = function() {
+            return initialTime;
+        };
+
+    }
+
+    // word object
+    function Word(word, category) {
+        this.word = word;
+        this.firstLetter = this.word[0];
+        this.category = category;
+
+        // todo: equals / comparator for slight misspelling
+    }
+
+}); // end of document.ready
