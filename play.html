@@ -17,19 +17,22 @@
         <br />
         <br />
         <!-- container for timer UI -->
-        <div id="timerUI">
+        <div id="qPane">
+            <div id="timerUI">
+            </div>
+
+            <div id="question">
+                <span id="cat"></span>
+                <span id="letter"></span>
+            </div>
+            Answer: <input id="txtAns" type="text" />
+            <button id="btnSubmit">Submit</button>
+
+
+            <button id="getAns">get answers</button>
         </div>
 
-        <div id="question">
-            <span id="cat"></span>
-            <span id="letter"></span>
-        </div>
-        Answer: <input id="txtAns" type="text" />
-        <button id="btnSubmit">Submit</button>
-
-
-        <button id="getAns">get answers</button>
-        <div id="ansPane">
+        <div id="ansPane" class="hidden">
             <p>
                 abc
             </p>

@@ -12,6 +12,7 @@ $(document).ready(function() {
     var $answerBox = $("#txtAns");
     var $btnSubmit = $("#btnSubmit");
     var $ansPane = $("#ansPane");
+    var $qPane = $("#qPane");
 
 
     $startBtn.click(function() {
@@ -47,8 +48,31 @@ $(document).ready(function() {
 
     function displayAnswers() {
         var ansData = game.checkStruct;
-        $ansPane.css('display', 'relative');
+        $ansPane.removeClass("hidden");
 
+        console.log("ansData = ", ansData);
+        // iterate over the answers then display
+        ansData.forEach(function(data) {
+            // put some id or class here for styling
+            // create template elements
+            var $ansTemplate = $("<div class='ansTemp'></div>");
+            var $letterTemplate = $("<span class='ansLetter'></span>");
+            var $categoryTemplate = $("<span class='ansCategory'></span>");
+            var $wordTemplate = $("<span class='ansWord'></span>");
+            var $correctTemplate = $("<span class='correctAns'></span>");
+
+            // put the data
+            $letterTemplate.text(data.correct.charAt(0));
+            $categoryTemplate.text(data.category);
+            $wordTemplate.text(data.answer);
+            $correctTemplate.text(data.correct);
+            $ansTemplate.append($letterTemplate);
+            $ansTemplate.append($categoryTemplate);
+            $ansTemplate.append($wordTemplate);
+            $ansTemplate.append($correctTemplate);
+            // append to parent div
+            $ansPane.append($ansTemplate);
+        });
     }
 
     // load JSON game data
@@ -119,6 +143,8 @@ $(document).ready(function() {
             },
             function() {
                 checkAnswers.call(this);
+                // actually there should be some kind of screen saying time is up before displaying the answers
+                // for a more.. smooth experience?
                 displayAnswers();
             }.bind(this));
 
@@ -171,12 +197,14 @@ $(document).ready(function() {
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
+                        category : words[i].category,
                         verdict : WRONG
                     });
                 } else if(wordStruct[currCat][answers[i]]) {    // is not null / undefined
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
+                        category : words[i].category,
                         verdict : CORRECT
                     });
                 } else {    // same first letter but not sure if misspelled so we will search entire category
@@ -194,12 +222,14 @@ $(document).ready(function() {
                         this.checkStruct.push({
                             answer : answers[i],
                             correct : correctWord,
+                            category : words[i].category,
                             verdict : ALMOST
                         });
                     } else {
                         this.checkStruct.push({
                             answer : answers[i],
                             correct : words[i].word,
+                            category : words[i].category,
                             verdict : WRONG
                         });
                     }
