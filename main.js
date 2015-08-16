@@ -9,7 +9,7 @@ $(document).ready(function() {
     var game = new Game();
     game.init();
 
-    var $startBtn = $("#btnStart");
+    var $btnRetry = $("#btnRetry");
     var $category = $("#cat");
     var $firstLetter = $("#letter");
     var $answerBox = $("#txtAns");
@@ -18,8 +18,15 @@ $(document).ready(function() {
     var $qPane = $("#qPane");
 
 
-    $startBtn.click(function() {
-        startGame();
+    // start game after 3 seconds of ready time
+    // within that time display some divs that say alerts the user to get ready
+    // question: after 3 seconds, is the ajax request alerady finish?
+    $(window).load(function() {
+        setTimeout(startGame, 3000);
+    });
+
+    $btnRetry.click(function() {
+        setTimeout(startGame, 3000);
     });
 
     $btnSubmit.click(function() {
@@ -31,6 +38,7 @@ $(document).ready(function() {
 
 
     function startGame() {
+        $answerBox.val("");
         // starts the timer and generates the words to guess
         game.start();
 
