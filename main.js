@@ -26,6 +26,8 @@ $(document).ready(function() {
     });
 
     $btnRetry.click(function() {
+        $ansPane.addClass("hidden");
+        $btnRetry.addClass("hidden");
         setTimeout(startGame, 3000);
     });
 
@@ -56,6 +58,7 @@ $(document).ready(function() {
     function displayAnswers() {
         var ansData = game.checkStruct;
         $ansPane.removeClass("hidden");
+        $btnRetry.removeClass("hidden");
 
         console.log("ansData = ", ansData);
         // iterate over the answers then display
