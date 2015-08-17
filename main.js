@@ -4,6 +4,8 @@
 
 // I am also not sure if putting everything inside the ready function advisable...
 
+// TODO: clear document elements every retry
+
 $(document).ready(function() {
 
     var game = new Game();
@@ -40,12 +42,20 @@ $(document).ready(function() {
 
 
     function startGame() {
-        $answerBox.val("");
+        clearElements();
         // starts the timer and generates the words to guess
         game.start();
 
         // load the first question
         nextQuestion();
+    }
+
+    function clearElements() {
+        // clear the answer box
+        $answerBox.val("");
+
+        // clear answer pane
+        // clear spans that contain question details
     }
 
     function nextQuestion() {
@@ -69,13 +79,19 @@ $(document).ready(function() {
             var $letterTemplate = $("<span class='ansLetter'></span>");
             var $categoryTemplate = $("<span class='ansCategory'></span>");
             var $wordTemplate = $("<span class='ansWord'></span>");
-            var $correctTemplate = $("<span class='correctAns'></span>");
+            var $correctTemplate = $("<span class='correctAns hidden'></span>");
 
             // put the data
             $letterTemplate.text(data.correct.charAt(0));
             $categoryTemplate.text(data.category);
             $wordTemplate.text(data.answer);
             $correctTemplate.text(data.correct);
+            switch (data.verdict) {
+                case game.WRONG: $wordTemplate.addClass("wrongAns"); break;
+                case game.CORRECT: $wordTemplate.addClass("rightAns"); break;
+                case game.ALMOST: $wordTemplate.addClass("almostAns"); break;
+                default: throw new Error("Invalid verdict");
+            }
             $ansTemplate.append($letterTemplate);
             $ansTemplate.append($categoryTemplate);
             $ansTemplate.append($wordTemplate);
@@ -95,9 +111,9 @@ $(document).ready(function() {
 
     function Game() {
         var randPlace = 1000000;    // change to const if supported (ES6 i think?)
-        var WRONG = "WRONG";        // these are constants too
-        var CORRECT = "CORRECT";
-        var ALMOST = "ALMOST";
+        this.WRONG = "WRONG";        // these are constants too
+        this.CORRECT = "CORRECT";
+        this.ALMOST = "ALMOST";
         var wordStruct = {};        // object structure representing the whole word-category relation
         var words = [];
         var answers = [];           // user answers
@@ -208,14 +224,14 @@ $(document).ready(function() {
                         answer : answers[i],
                         correct : words[i].word,
                         category : words[i].category,
-                        verdict : WRONG
+                        verdict : this.WRONG
                     });
                 } else if(wordStruct[currCat][answers[i]]) {    // is not null / undefined
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
                         category : words[i].category,
-                        verdict : CORRECT
+                        verdict : this.CORRECT
                     });
                 } else {    // same first letter but not sure if misspelled so we will search entire category
                     var misspelled = false;
@@ -233,14 +249,14 @@ $(document).ready(function() {
                             answer : answers[i],
                             correct : correctWord,
                             category : words[i].category,
-                            verdict : ALMOST
+                            verdict : this.ALMOST
                         });
                     } else {
                         this.checkStruct.push({
                             answer : answers[i],
                             correct : words[i].word,
                             category : words[i].category,
-                            verdict : WRONG
+                            verdict : this.WRONG
                         });
                     }
                 }

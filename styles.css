@@ -66,9 +66,21 @@
 }
 
 .ansTemp {
-	width: 100px;
+	width: 500px;
 	height: 50px;
 	background-color: rgb(230, 186, 116);
 	margin-bottom: 20px;
 	/*clear: both;*/
+}
+
+.rightAns {
+	color: #27be46;
+}
+
+.wrongAns {
+	color: #ba2420;
+}
+
+.almostAns {
+	color: #cf7328;
 }
