@@ -55,7 +55,11 @@ $(document).ready(function() {
         $answerBox.val("");
 
         // clear answer pane
+        $ansPane.empty();
+
         // clear spans that contain question details
+        $category.text("");
+        $firstLetter.text("");
     }
 
     function nextQuestion() {
@@ -65,6 +69,16 @@ $(document).ready(function() {
         $category.text(question.category);
     }
 
+    function addClickWordListener(elem) {
+        if (!elem.hasClass("rightAns")) {   // right answer does not need a listener
+            elem.click(function() {
+                $(this).next(".rightAns").toggleClass("hidden");
+                $(this).toggleClass("hidden");
+            });
+        }
+    }
+
+    // should there be any animation on the displaying of answers
     function displayAnswers() {
         var ansData = game.checkStruct;
         $ansPane.removeClass("hidden");
@@ -79,7 +93,7 @@ $(document).ready(function() {
             var $letterTemplate = $("<span class='ansLetter'></span>");
             var $categoryTemplate = $("<span class='ansCategory'></span>");
             var $wordTemplate = $("<span class='ansWord'></span>");
-            var $correctTemplate = $("<span class='correctAns hidden'></span>");
+            var $correctTemplate = $("<span class='rightAns hidden'></span>");
 
             // put the data
             $letterTemplate.text(data.correct.charAt(0));
@@ -92,6 +106,8 @@ $(document).ready(function() {
                 case game.ALMOST: $wordTemplate.addClass("almostAns"); break;
                 default: throw new Error("Invalid verdict");
             }
+            addClickWordListener($wordTemplate);
+
             $ansTemplate.append($letterTemplate);
             $ansTemplate.append($categoryTemplate);
             $ansTemplate.append($wordTemplate);
@@ -219,7 +235,8 @@ $(document).ready(function() {
             this.checkStruct = [];
             for (var i = 0; i < answers.length; i++) {
                 currCat = words[i].category;
-                if (answers[i].charAt(0) != words[i].firstLetter) {
+                if (answers[i].charAt(0) !== words[i].firstLetter) {
+                    console.log("first cond");
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
