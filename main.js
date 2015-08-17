@@ -1,10 +1,10 @@
 // main.js
 // This file is specifically for play.html thus document.ready initializes the game right after the
 // page loads, If this will be the js file for the whole web app, adjust ready() accordingly.
+// TODO: bind the enter key to submit button
 
 // I am also not sure if putting everything inside the ready function advisable...
 
-// TODO: bind the enter key to submit button
 
 $(document).ready(function() {
 
