@@ -4,7 +4,7 @@
 
 // I am also not sure if putting everything inside the ready function advisable...
 
-// TODO: clear document elements every retry
+// TODO: bind the enter key to submit button
 
 $(document).ready(function() {
 
@@ -24,12 +24,14 @@ $(document).ready(function() {
     // within that time display some divs that say alerts the user to get ready
     // question: after 3 seconds, is the ajax request alerady finish?
     $(window).load(function() {
+        clearElements();
         setTimeout(startGame, 3000);
     });
 
     $btnRetry.click(function() {
         $ansPane.addClass("hidden");
-        $btnRetry.addClass("hidden");
+        $btnRetry.addClass("hidden");    // btnretry is best placed in the div, gonna transfer sometime
+        clearElements();
         setTimeout(startGame, 3000);
     });
 
@@ -42,7 +44,6 @@ $(document).ready(function() {
 
 
     function startGame() {
-        clearElements();
         // starts the timer and generates the words to guess
         game.start();
 
@@ -94,12 +95,14 @@ $(document).ready(function() {
             var $categoryTemplate = $("<span class='ansCategory'></span>");
             var $wordTemplate = $("<span class='ansWord'></span>");
             var $correctTemplate = $("<span class='rightAns hidden'></span>");
+            var $pointsTemlate = $("<span class='points'></span>");
 
             // put the data
             $letterTemplate.text(data.correct.charAt(0));
             $categoryTemplate.text(data.category);
             $wordTemplate.text(data.answer);
             $correctTemplate.text(data.correct);
+            $pointsTemlate.text(data.points);
             switch (data.verdict) {
                 case game.WRONG: $wordTemplate.addClass("wrongAns"); break;
                 case game.CORRECT: $wordTemplate.addClass("rightAns"); break;
@@ -112,6 +115,7 @@ $(document).ready(function() {
             $ansTemplate.append($categoryTemplate);
             $ansTemplate.append($wordTemplate);
             $ansTemplate.append($correctTemplate);
+            $ansTemplate.append($pointsTemlate);
             // append to parent div
             $ansPane.append($ansTemplate);
         });
@@ -133,6 +137,7 @@ $(document).ready(function() {
         var wordStruct = {};        // object structure representing the whole word-category relation
         var words = [];
         var answers = [];           // user answers
+        var totalPoints;
         var $timerUI;
         var seconds;
         var currWordIndex;  // index of the current word in words[]
@@ -157,6 +162,7 @@ $(document).ready(function() {
             shuffleWords();
             currWordIndex = 0;
             answers = [];
+            totalPoints = 0;
 
             // initialize clock
             var timer = new Timer(20);
@@ -219,8 +225,12 @@ $(document).ready(function() {
             answers.push(ans.toLowerCase());
         };
 
+        this.getTotalPoints = function() {
+            return totalPoints;
+        };
+
         var checkMisspelled = function(target, check) {
-            if (target.length !== check.length) return false;
+            if (target.length !== check.length || target.charAt(0) !== check.charAt(0)) return false;
 
             var diff = 0;   // number of different characters
             for (var i = 0; i < target.length; i++) {
@@ -236,19 +246,22 @@ $(document).ready(function() {
             for (var i = 0; i < answers.length; i++) {
                 currCat = words[i].category;
                 if (answers[i].charAt(0) !== words[i].firstLetter) {
-                    console.log("first cond");
+                    // console.log("first cond ");
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
                         category : words[i].category,
-                        verdict : this.WRONG
+                        verdict : this.WRONG,
+                        points : 0
                     });
                 } else if(wordStruct[currCat][answers[i]]) {    // is not null / undefined
+                    totalPoints += 2;
                     this.checkStruct.push({
                         answer : answers[i],
                         correct : words[i].word,
                         category : words[i].category,
-                        verdict : this.CORRECT
+                        verdict : this.CORRECT,
+                        points : 2
                     });
                 } else {    // same first letter but not sure if misspelled so we will search entire category
                     var misspelled = false;
@@ -262,18 +275,21 @@ $(document).ready(function() {
                         }
                     }
                     if (misspelled) {
+                        totalPoints += 1;
                         this.checkStruct.push({
                             answer : answers[i],
                             correct : correctWord,
                             category : words[i].category,
-                            verdict : this.ALMOST
+                            verdict : this.ALMOST,
+                            points : 1
                         });
                     } else {
                         this.checkStruct.push({
                             answer : answers[i],
                             correct : words[i].word,
                             category : words[i].category,
-                            verdict : this.WRONG
+                            verdict : this.WRONG,
+                            points : 0
                         });
                     }
                 }
