@@ -119,6 +119,9 @@ $(document).ready(function() {
             // append to parent div
             $ansPane.append($ansTemplate);
         });
+
+        var $totalPointsTemplate = $("<div class='totalPoints'>" + game.getTotalPoints() + "</div>");
+        $ansPane.append($totalPointsTemplate);
     }
 
     // load JSON game data

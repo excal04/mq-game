@@ -79,14 +79,20 @@
 
 .wrongAns {
 	color: #ba2420;
-	/*set pointer design*/
+	cursor: pointer;
 }
 
 .almostAns {
 	color: #cf7328;
-	/*set pointer design*/
+	cursor: pointer;
 }
 
 .points {
 	color: #06c978;
+}
+
+.totalPoints {
+	width: 100px;
+	height: 100px;
+	/*color: ;*/
 }
