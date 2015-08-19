@@ -18,21 +18,21 @@ $(document).ready(function() {
     var $btnSubmit = $("#btnSubmit");
     var $ansPane = $("#ansPane");
     var $qPane = $("#qPane");
+    var ENTERKEY = 13;
 
 
     // start game after 3 seconds of ready time
     // within that time display some divs that say alerts the user to get ready
     // question: after 3 seconds, is the ajax request alerady finish?
     $(window).load(function() {
-        clearElements();
-        setTimeout(startGame, 3000);
+        initGamePage();
     });
 
     $btnRetry.click(function() {
         $ansPane.addClass("hidden");
         $btnRetry.addClass("hidden");    // btnretry is best placed in the div, gonna transfer sometime
-        clearElements();
-        setTimeout(startGame, 3000);
+        initGamePage();
+
     });
 
     $btnSubmit.click(function() {
@@ -41,6 +41,18 @@ $(document).ready(function() {
         nextQuestion();
         $answerBox.val("");
     });
+
+    $answerBox.keyup(function(event) {
+        if (event.which === ENTERKEY) {
+            $btnSubmit.click();
+        }
+    });
+
+    function initGamePage() {
+        clearElements();
+        $answerBox.focus();
+        setTimeout(startGame, 3000);
+    }
 
 
     function startGame() {
@@ -84,6 +96,7 @@ $(document).ready(function() {
         var ansData = game.checkStruct;
         $ansPane.removeClass("hidden");
         $btnRetry.removeClass("hidden");
+        $answerBox.blur();
 
         console.log("ansData = ", ansData);
         // iterate over the answers then display
