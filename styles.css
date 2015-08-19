@@ -46,9 +46,13 @@
 	height: 300px;
 }
 
-#txtAns {
+#txtAns, #btnSubmit {
 	font-size: 50px;
-	size: 20;
+}
+
+#btnSubmit {
+	background-color: #1a951f;
+	color: white;
 }
 
 /* text on the timer UI that displays the current seconds */
