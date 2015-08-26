@@ -103,11 +103,11 @@ $(document).ready(function() {
             // put some id or class here for styling
             // create template elements
             var $ansTemplate = $("<div class='ansTemp'></div>");
-            var $letterTemplate = $("<span class='ansLetter'></span>");
-            var $categoryTemplate = $("<span class='ansCategory'></span>");
-            var $wordTemplate = $("<span class='ansWord'></span>");
-            var $correctTemplate = $("<span class='rightAns hidden'></span>");
-            var $pointsTemlate = $("<span class='points'></span>");
+            var $letterTemplate = $("<div class='ansLetter'></div>");
+            var $categoryTemplate = $("<div class='ansCategory'></div>");
+            var $wordTemplate = $("<div class='ansWord'></div>");
+            var $correctTemplate = $("<div class='rightAns hidden'></div>");
+            var $pointsTemlate = $("<div class='points'></div>");
 
             // put the data
             $letterTemplate.text(data.correct.charAt(0));
@@ -134,6 +134,7 @@ $(document).ready(function() {
 
         var $totalPointsTemplate = $("<div class='totalPoints'>" + game.getTotalPoints() + "</div>");
         $ansPane.append($totalPointsTemplate);
+        $ansPane.append($("<a href='index.html'>HOME</a>"));
     }
 
     // load JSON game data
