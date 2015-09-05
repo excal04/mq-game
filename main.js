@@ -37,6 +37,7 @@ $(document).ready(function() {
     $btnSubmit.click(function() {
         // game logic
         game.addAns($answerBox.val());
+        cardSlide($("#question"));
         nextQuestion();
         $answerBox.val("");
     });
@@ -79,6 +80,13 @@ $(document).ready(function() {
         var question = game.nextQuestion();
         $firstLetter.text(question.letter);
         $category.text(question.category);
+    }
+
+    function cardSlide($elem) {
+        $elem.css('margin-left', '-=1000')
+            .animate({
+                'margin-left': '+=1000'
+            }, 200);    // change transition speed here
     }
 
     function addClickWordListener(elem) {
@@ -130,6 +138,8 @@ $(document).ready(function() {
             $ansTemplate.append($pointsTemlate);
             // append to parent div
             $ansPane.append($ansTemplate);
+
+            cardSlide($ansTemplate);
         });
 
         var $totalPointsTemplate = $("<div class='totalPoints'>" + game.getTotalPoints() + "</div>");
@@ -185,9 +195,9 @@ $(document).ready(function() {
             // if timer ui already exists, destroy first before recreation
             seconds && seconds.destroy();
             seconds = new ProgressBar.Circle($timerUI, {
-                // color: "#FCB03C",
-                // trailColor: "#ddd",
-                // duration: 970,
+                color: "#3ddab4",
+                trailColor: "#ddd",
+                duration: 970,
                 text: {
                     value: timer.getInitTime()
                 },

@@ -1,6 +1,9 @@
 /* styles.css */
 /* css file for mq-game */
 
+body {
+	background-color: #c5d5d9;
+}
 
 .menu {
 	list-style-type: none;
@@ -41,13 +44,18 @@
 #timerUI {
 	position: relative;
 	margin-left: 40px;
-	background-color: rgb(175, 212, 226);
+	/*background-color: rgb(175, 212, 226);*/
 	width: 300px;
 	height: 300px;
 }
 
-#txtAns, #btnSubmit {
+#answer input, #answer button {
 	font-size: 50px;
+}
+
+#answer {
+	margin-top: 100px;
+	z-index: 20;
 }
 
 #btnSubmit {
@@ -63,7 +71,7 @@
 
 .ansLetter {
 	color: rgb(148, 42, 18);
-	font-size: 30px;
+	font-size: 50px;
 }
 
 .ansCategory {
@@ -104,4 +112,27 @@
 	width: 100px;
 	height: 100px;
 	/*color: ;*/
+}
+
+#question span {
+	font-size: 50px;
+}
+
+#question span#letter {
+	color: #18a1da;
+	margin-left: 50px;
+	font-size: 100px;
+}
+
+.ansLetter, #question span#letter {
+	text-transform: uppercase;
+}
+
+#question {
+	margin-top: 100px;
+}
+
+#timerUI {
+	float: right;
+	margin-right: 100px;
 }
