@@ -51,11 +51,12 @@ body {
 
 #answer input, #answer button {
 	font-size: 50px;
+	z-index: 20;
 }
 
 #answer {
 	margin-top: 100px;
-	z-index: 20;
+	/*z-index: 20;*/
 }
 
 #btnSubmit {
@@ -106,6 +107,11 @@ body {
 
 .points {
 	color: #06c978;
+	font-size: 40px;
+	position: relative;
+	left: 90%;
+	top: -70%;
+
 }
 
 .totalPoints {
@@ -135,4 +141,37 @@ body {
 #timerUI {
 	float: right;
 	margin-right: 100px;
+}
+
+#readyLeft, #readyRight {
+	/*background-color: #c5d5d9;*/
+	background-color: #92b1b9;
+	/*background-color: rgb(247, 62, 164);*/
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	z-index: 30;
+}
+
+#readyRight {
+	left: 50%;
+}
+
+#readyText {
+	width: 20%;
+	height: 20%;
+	position: absolute;
+	top: 25%;
+	left: 40%;
+	right: auto;
+	z-index: 40;
+
+	text-align: center;
+	vertical-align: middle;
+	font-size: 80px;
 }

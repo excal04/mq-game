@@ -4,6 +4,9 @@
 
 // I am also not sure if putting everything inside the ready function advisable...
 
+// FIXME:
+// bug on start game button click (restart part, ready does not show)
+
 
 $(document).ready(function() {
 
@@ -17,6 +20,9 @@ $(document).ready(function() {
     var $btnSubmit = $("#btnSubmit");
     var $ansPane = $("#ansPane");
     var $qPane = $("#qPane");
+    var $readyText = $("#readyText");
+    var $readyLeft = $("#readyLeft");
+    var $readyRight = $("#readyRight");
     var ENTERKEY = 13;
 
 
@@ -52,6 +58,27 @@ $(document).ready(function() {
         clearElements();
         $answerBox.focus();
         setTimeout(startGame, 3000);
+
+        // this executed first
+        $readyLeft.css('margin-left', '0');
+        $readyRight.css('margin-left', '0');
+        $readyText.text("Ready");
+        $readyText.fadeOut(600, function() {
+            $(this).text("Set")
+                .fadeIn(400)
+                .fadeOut(600, function() {
+                    $(this).text("Go")
+                        .fadeIn(400)
+                        .fadeOut(800, function() {
+                            $readyLeft.animate({
+                                'margin-left' : '-=1000'
+                            }, 200);
+                            $readyRight.animate({
+                                'margin-left' : '+=1000'
+                            }, 200);
+                        });
+                });
+        });
     }
 
 
@@ -136,15 +163,25 @@ $(document).ready(function() {
             $ansTemplate.append($wordTemplate);
             $ansTemplate.append($correctTemplate);
             $ansTemplate.append($pointsTemlate);
+            $ansTemplate.addClass("hidden");
             // append to parent div
             $ansPane.append($ansTemplate);
-
-            cardSlide($ansTemplate);
         });
 
         var $totalPointsTemplate = $("<div class='totalPoints'>" + game.getTotalPoints() + "</div>");
         $ansPane.append($totalPointsTemplate);
         $ansPane.append($("<a href='index.html'>HOME</a>"));
+
+        // animate display
+        var allansTemp = $ansPane.children("div.ansTemp");
+        for (var i = 0; i < allansTemp.length; i++) {
+            var $elem = $(allansTemp[i]);
+            setTimeout(function() {
+                this.removeClass("hidden");
+                cardSlide(this);
+            }.bind($elem), (i + 1) * 200 );
+
+        }
     }
 
     // load JSON game data
@@ -191,7 +228,7 @@ $(document).ready(function() {
             totalPoints = 0;
 
             // initialize clock
-            var timer = new Timer(20);
+            var timer = new Timer(10);
             // if timer ui already exists, destroy first before recreation
             seconds && seconds.destroy();
             seconds = new ProgressBar.Circle($timerUI, {
