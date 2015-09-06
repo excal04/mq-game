@@ -34,6 +34,7 @@ $(document).ready(function() {
     });
 
     $btnRetry.click(function() {
+        console.log("btn retry clicked");
         $ansPane.addClass("hidden");
         $btnRetry.addClass("hidden");    // btnretry is best placed in the div, gonna transfer sometime
         initGamePage();
@@ -43,7 +44,7 @@ $(document).ready(function() {
     $btnSubmit.click(function() {
         // game logic
         game.addAns($answerBox.val());
-        cardSlide($("#question"));
+        cardSlide($("#question"), 0);
         nextQuestion();
         $answerBox.val("");
     });
@@ -63,22 +64,24 @@ $(document).ready(function() {
         $readyLeft.css('margin-left', '0');
         $readyRight.css('margin-left', '0');
         $readyText.text("Ready");
-        $readyText.fadeOut(600, function() {
-            $(this).text("Set")
-                .fadeIn(400)
-                .fadeOut(600, function() {
-                    $(this).text("Go")
-                        .fadeIn(400)
-                        .fadeOut(800, function() {
-                            $readyLeft.animate({
-                                'margin-left' : '-=1000'
-                            }, 200);
-                            $readyRight.animate({
-                                'margin-left' : '+=1000'
-                            }, 200);
-                        });
-                });
-        });
+        $readyText.fadeIn(400).                 // i think this fadeIn does not execute since item is already visible
+            fadeOut(600, function() {
+                $(this).text("Set")
+                    .fadeIn(400)
+                    .fadeOut(600, function() {
+                        $(this).text("Go")
+                            .fadeIn(400)
+                            .fadeOut(800, function() {
+                                // will execute in sync
+                                $readyLeft.animate({
+                                    'margin-left' : '-=1000'
+                                }, 200);
+                                $readyRight.animate({
+                                    'margin-left' : '+=1000'
+                                }, 200);
+                            });
+                    });
+            });
     }
 
 
@@ -109,7 +112,10 @@ $(document).ready(function() {
         $category.text(question.category);
     }
 
-    function cardSlide($elem) {
+    // baseMargin: string that represents original(expected value) margin-left of $elem
+    function cardSlide($elem, baseMargin) {
+        // do not slide if in between animations
+        if($elem.css('margin-left') !== baseMargin + "px") return;
         $elem.css('margin-left', '-=1000')
             .animate({
                 'margin-left': '+=1000'
@@ -170,7 +176,13 @@ $(document).ready(function() {
 
         var $totalPointsTemplate = $("<div class='totalPoints'>" + game.getTotalPoints() + "</div>");
         $ansPane.append($totalPointsTemplate);
-        $ansPane.append($("<a href='index.html'>HOME</a>"));
+        $ansPane.append($("<a href='index.html' id='backHome'>HOME</a>"));
+        // $ansPane.append('<button id="btnRetry">Play Again</button>');
+        // $btnRetry = $("#btnRetry");
+
+        // slide back readyLeft and readyRight
+        $readyLeft.animate({'margin-left' : '0'}, 200);
+        $readyRight.animate({'margin-left' : '0'}, 200);
 
         // animate display
         var allansTemp = $ansPane.children("div.ansTemp");
@@ -178,7 +190,7 @@ $(document).ready(function() {
             var $elem = $(allansTemp[i]);
             setTimeout(function() {
                 this.removeClass("hidden");
-                cardSlide(this);
+                cardSlide(this, 0);
             }.bind($elem), (i + 1) * 200 );
 
         }
@@ -228,7 +240,7 @@ $(document).ready(function() {
             totalPoints = 0;
 
             // initialize clock
-            var timer = new Timer(10);
+            var timer = new Timer(5);
             // if timer ui already exists, destroy first before recreation
             seconds && seconds.destroy();
             seconds = new ProgressBar.Circle($timerUI, {
