@@ -3,21 +3,45 @@
 <html>
 	<head>
 		<link rel='stylesheet' type='text/css' href='./styles.css' />
-		<!-- // <script src="lib/jquery-1.10.2.min.js"></script>
-        // <script src="lib/progressbar.min.js"></script>
-        // <script src="main.js"></script> -->
+		<script src="lib/jquery-1.10.2.min.js"></script>
+        <script src="indexctrl.js"></script>
 	</head>
 
 	<body>
-		<h1>Minute Quiz (for lack of a creative name ugh :/)</h1>
+		<h1 id="gameTitle">Minute Quiz (for lack of a creative name ugh :/)</h1>
 
 		<div id='menuPanel'>
-			<ul id='menus'>
-				<li id="btnPlay" class='menu'><a href="play.html">Play</a></li>
-				<li class='menu'><a href="#">Instructions</a></li>
-				<li class='menu'><a href="#">Highscores</a></li>
-				<li class='menu'><a href="#">About</a></li>
-			</ul>
+			<div id="btnPlay" class="menu"><a href="play.html">Play</a></div>
+			<div class="menu"><a href="#highscores">Highscores</a></div>
+			<div class="menu"><a href="#instructions">Instructions</a></div>
+			<div class="menu"><a href="#about">About</a></div>
 		</div>
+
+		<div id="highscores">
+			<h2 class="menuHeading">Highscores</h2>
+			<ol>
+				<li>Meow cat</li>
+			</ol>
+			<div>
+				Page Under Construction
+			</div>
+			<img src="./assets/computer-cat.jpg" alt="cat-coding-this-part" width="1000px" height="600px">
+		</div>
+		<div id="instructions">
+			<h2 class="menuHeading">Instructions</h2>
+			<img src="./assets/instr_opt.gif" alt="how-to-play-gif-tutorial">
+		</div>
+		<div id="about">
+			<h2 class="menuHeading">About</h2>
+
+			<p>A game made during my pastimes. Further improments will be made in the future</p>
+			<div style="height: 650px;"></div>
+			<p class="centerText">- 2015 -</p>
+		</div>
+
+		<svg id="gotoTop" class="hidden" height="100" width="100">
+			<polygon points="50,0 70,70 50,40 30,70" />
+
+		</svg>
 	</body>
 </html>

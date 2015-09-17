@@ -5,10 +5,14 @@ body {
 	background-color: #c5d5d9;
 }
 
-.menu {
+#instructions img {
+	border: 2px solid black;
+}
+
+/*.menu {
 	list-style-type: none;
 	display: inline-block;
-	background-color: blue;	/* hurts my eyes */
+	background-color: blue;
 	width: 100px;
 	text-align: center;
 }
@@ -17,7 +21,57 @@ body {
 	color: white;
 	text-decoration: none;
 	font-size: 20px;
-	font: serif;	/* i want a nice font :( */
+	font: serif;
+}*/
+
+#gotoTop {
+	position: fixed;
+	left: 93%;
+	top: 88%;
+	fill: #1f5825;
+	cursor: pointer;
+}
+
+.centerText {
+	text-align: center;
+}
+
+img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.menu {
+	width: 500px;
+	height: 80px;
+	background-color: #2768b4;
+	margin-bottom: 50px;
+	margin-top: 50px;
+	border-radius: 20px;
+	text-align: center;
+	vertical-align: middle;
+
+	margin-left: auto;
+	margin-right: auto;
+
+}
+
+.menu a {
+	color: white;
+	text-decoration: none;
+	font-size: 50px;
+	font: serif;	/* get a different one */
+}
+
+.menuHeading {
+	margin-top: 300px;
+}
+
+#gameTitle {
+	margin-top: 50px;
+	text-align: center;
+
 }
 
 #qPane {

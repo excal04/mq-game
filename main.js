@@ -4,9 +4,6 @@
 
 // I am also not sure if putting everything inside the ready function advisable...
 
-// FIXME:
-// bug on start game button click (restart part, ready does not show)
-
 
 $(document).ready(function() {
 
@@ -23,8 +20,8 @@ $(document).ready(function() {
     var $readyText = $("#readyText");
     var $readyLeft = $("#readyLeft");
     var $readyRight = $("#readyRight");
-    var ENTERKEY = 13;
 
+    var ENTERKEY = 13;
 
     // start game after 3 seconds of ready time
     // within that time display some divs that say alerts the user to get ready
@@ -240,7 +237,7 @@ $(document).ready(function() {
             totalPoints = 0;
 
             // initialize clock
-            var timer = new Timer(5);
+            var timer = new Timer(60);
             // if timer ui already exists, destroy first before recreation
             seconds && seconds.destroy();
             seconds = new ProgressBar.Circle($timerUI, {
