@@ -294,7 +294,7 @@ $(document).ready(function() {
 
         // add a user's answer
         this.addAns = function(ans) {
-            answers.push(ans.toLowerCase());
+            answers.push(ans.toLowerCase().trim());
         };
 
         this.getTotalPoints = function() {
@@ -317,6 +317,7 @@ $(document).ready(function() {
             this.checkStruct = [];
             for (var i = 0; i < answers.length; i++) {
                 currCat = words[i].category;
+                console.log("debug: checkAns, i =", i, ", currCat=",currCat, ", words[i] = ", words[i]);
                 if (answers[i].charAt(0) !== words[i].firstLetter) {
                     // console.log("first cond ");
                     this.checkStruct.push({
@@ -374,11 +375,12 @@ $(document).ready(function() {
 
         var generateWords = function(obj) {
             obj.categories.forEach(function(cat) {
-                var currCat = cat.name.toUpperCase();
+                var currCat = cat.name.toUpperCase().trim();
                 wordStruct[currCat] = {};
                 cat.words.forEach(function(w) {
-                    var word = new Word(w.toLowerCase(), currCat);
-                    wordStruct[currCat][w] = w;
+                    var lowerW = w.toLowerCase().trim();
+                    var word = new Word(lowerW, currCat);
+                    wordStruct[currCat][lowerW] = lowerW;
                     words.push(word);
                 });
             });
