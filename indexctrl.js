@@ -32,7 +32,7 @@ $(document).ready(function() {
     });
 
     $(window).scroll(function() {
-        if ($root.scrollTop() === 0) {
+        if ($(document).scrollTop() === 0) {
             $gotoTop.fadeOut();
         } else {
             $gotoTop.fadeIn();

@@ -4,6 +4,11 @@
 
 // I am also not sure if putting everything inside the ready function advisable...
 
+// problems encountered:
+// + ansPane is overflow:scoll not sure if that is correct
+//      appropriate behavior but body is still seen from the background
+// + the whole game seems to have a huge memory consumption
+
 
 $(document).ready(function() {
 
@@ -31,7 +36,7 @@ $(document).ready(function() {
     });
 
     $btnRetry.click(function() {
-        console.log("btn retry clicked");
+        // console.log("btn retry clicked");
         $ansPane.addClass("hidden");
         $btnRetry.addClass("hidden");    // btnretry is best placed in the div, gonna transfer sometime
         initGamePage();
@@ -135,7 +140,7 @@ $(document).ready(function() {
         $btnRetry.removeClass("hidden");
         $answerBox.blur();
 
-        console.log("ansData = ", ansData);
+        // console.log("ansData = ", ansData);
         // iterate over the answers then display
         ansData.forEach(function(data) {
             // put some id or class here for styling
@@ -220,7 +225,7 @@ $(document).ready(function() {
         this.init = function() {
             loadGameData(function(data) {
                 generateWords(data);
-                console.log("data inside callback = ", data);
+                // console.log("data inside callback = ", data);
 
             });
             // initialize timer elements
@@ -271,12 +276,12 @@ $(document).ready(function() {
             // while (timer.running) {
             //     console.log("do something");
             // }
-            console.log("game start: random words = ", words);
+            // console.log("game start: random words = ", words);
         };
 
         this.end = function() {
             // disable a button for example
-            console.log("game ended");
+            // console.log("game ended");
         };
 
         // return the next question
@@ -287,7 +292,7 @@ $(document).ready(function() {
                     category : words[currWordIndex++].category
                 };
             } catch (e) {
-                console.log("Error: ", e.message);
+                // console.log("Error: ", e.message);
                 alert("Oops! Something went, we probably ran out of questions :/");
             }
         };
@@ -317,7 +322,7 @@ $(document).ready(function() {
             this.checkStruct = [];
             for (var i = 0; i < answers.length; i++) {
                 currCat = words[i].category;
-                console.log("debug: checkAns, i =", i, ", currCat=",currCat, ", words[i] = ", words[i]);
+                // console.log("debug: checkAns, i =", i, ", currCat=",currCat, ", words[i] = ", words[i]);
                 if (answers[i].charAt(0) !== words[i].firstLetter) {
                     // console.log("first cond ");
                     this.checkStruct.push({
@@ -368,8 +373,8 @@ $(document).ready(function() {
                 }
             }
 
-            console.log("checkstruct in checker = ", this.checkStruct);
-            console.log("checkstruct this = ", this);
+            // console.log("checkstruct in checker = ", this.checkStruct);
+            // console.log("checkstruct this = ", this);
         };
 
 
@@ -385,7 +390,7 @@ $(document).ready(function() {
                 });
             });
 
-            console.log("gen words: struct = ", wordStruct);
+            // console.log("gen words: struct = ", wordStruct);
         };
 
         var shuffleWords = function() {
@@ -409,7 +414,7 @@ $(document).ready(function() {
 
         // callback to do every tick
         this.task = function() {
-            console.log("currTime = ", currTime);
+            // console.log("currTime = ", currTime);
         };
 
         // callback when timer is done

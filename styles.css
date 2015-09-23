@@ -89,6 +89,8 @@ img {
 	/*background-color: rgb(130, 189, 131);*/
 	width: 100%;
 	height: 100%;
+
+	overflow: scroll;
 }
 
 .hidden {
